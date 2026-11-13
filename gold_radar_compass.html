@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#090909">
+<title>Gold Radar</title>
+<style>
+:root{--bg:#090909;--panel:#171717;--gold:#d8ad52;--gold2:#f5d98b;--muted:#aaa296;--line:#403523;--green:#78d5a1;--red:#ff8585}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#382b17,#111 38%,#080808 80%);color:#f6f0e5;font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:22px 18px 14px;display:flex;justify-content:space-between;align-items:center;max-width:760px;margin:auto}.brand{font-size:21px;font-weight:900;letter-spacing:2px}.brand span{color:var(--gold)}.sub{font-size:10px;color:var(--muted);letter-spacing:2px;margin-top:4px}.pill{border:1px solid #574628;color:var(--gold2);padding:7px 10px;border-radius:25px;font-size:10px}
+main{max-width:760px;margin:auto;padding:0 14px 30px}.notice{border:1px solid #69552f;background:#251e12;color:#ead8ad;border-radius:13px;padding:12px 14px;font-size:12px;line-height:1.55;margin:8px 0 14px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:12px 0}.tab{border:1px solid var(--line);border-radius:11px;background:#121212;color:#bbb3a7;padding:11px 3px;font-size:12px}.tab.active{border-color:var(--gold);color:var(--gold2);background:#241d11}
+.card{background:linear-gradient(145deg,#191919,#111);border:1px solid #393022;border-radius:18px;padding:16px;margin:12px 0}.card h2{font-size:14px;letter-spacing:1px;color:var(--gold2);margin:0 0 13px}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.muted{color:var(--muted);font-size:12px}.tag{font-size:10px;color:var(--green);border:1px solid #31533e;padding:5px 8px;border-radius:20px}
+.compass{width:min(82vw,320px);height:min(82vw,320px);margin:18px auto;position:relative;border:1px solid #765d30;border-radius:50%;background:radial-gradient(circle,#242017 0,#121212 70%);box-shadow:inset 0 0 28px #000}
+.compass:before,.compass:after{content:"";position:absolute;background:#554329;left:50%;top:5%;width:1px;height:90%}.compass:after{transform:rotate(90deg)}
+.ring{position:absolute;border:1px solid #51432b;border-radius:50%;inset:14%}.ring.r2{inset:29%}.ring.r3{inset:43%}
+.cardinal{position:absolute;color:#d6c49c;font-size:12px;font-weight:700}.n{top:7px;left:50%;transform:translateX(-50%)}.s{bottom:7px;left:50%;transform:translateX(-50%)}.e{right:10px;top:50%;transform:translateY(-50%)}.w{left:10px;top:50%;transform:translateY(-50%)}
+.needle{position:absolute;left:50%;top:50%;width:5px;height:40%;transform-origin:50% 0;transform:rotate(0deg);margin-left:-2px;margin-top:0;z-index:3}
+.needle:before{content:"";position:absolute;left:0;top:0;border-left:2.5px solid transparent;border-right:2.5px solid transparent;border-bottom:115px solid var(--gold2);filter:drop-shadow(0 0 5px #e9c66e)}
+.center{position:absolute;left:50%;top:50%;width:13px;height:13px;background:var(--gold2);border-radius:50%;transform:translate(-50%,-50%);z-index:4;box-shadow:0 0 12px #f5d98b}
+.value{text-align:center;font-size:42px;font-weight:800;color:var(--gold2);margin:5px 0}.unit{text-align:center;color:var(--muted);font-size:12px}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}button{font:inherit;cursor:pointer}.primary{border:0;border-radius:12px;padding:14px;background:linear-gradient(110deg,#a77b2d,#f0d28a);color:#17120a;font-weight:800}.secondary{border:1px solid #5a492b;border-radius:11px;padding:12px;background:#1b1710;color:var(--gold2)}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stat{background:#111;border:1px solid #30291e;border-radius:12px;padding:12px}.stat b{display:block;color:var(--gold2);font-size:18px;margin-top:5px}
+.page.hidden{display:none}.item{padding:11px 0;border-bottom:1px solid #30291e;display:flex;justify-content:space-between;gap:10px;font-size:12px}.footer{text-align:center;color:#777;font-size:10px;padding:18px}
+label{display:block;color:#c8c0b4;font-size:12px;margin:13px 0 7px}select{width:100%;background:#101010;color:#eee;border:1px solid #4b402d;border-radius:10px;padding:12px}
+</style>
+</head>
+<body>
+<header><div><div class="brand">GOLD <span>RADAR</span></div><div class="sub">PUSULA MODU • SÜRÜM 1.1</div></div><div class="pill" id="status">İZİN BEKLİYOR</div></header>
+<main>
+<div class="notice"><b>Önemli:</b> Bu sürüm desteklenen iPhone/Safari ayarlarında cihaz yönünü ve pusula başlığını okumayı dener. Bu, gerçek µT manyetik alan ölçümü değildir ve altın/metal tespiti yapmaz. Pusula çevredeki manyetik parazitlerden etkilenebilir.</div>
+<div class="tabs"><button class="tab active" data-tab="radar">Pusula</button><button class="tab" data-tab="history">Geçmiş</button><button class="tab" data-tab="settings">Ayarlar</button><button class="tab" data-tab="info">Bilgi</button></div>
+<section id="radar" class="page">
+<div class="card">
+<div class="row"><h2>CANLI PUSULA</h2><span class="tag" id="source">SENSÖR BAĞLI DEĞİL</span></div>
+<div class="compass"><div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div><span class="cardinal n">K</span><span class="cardinal e">D</span><span class="cardinal s">G</span><span class="cardinal w">B</span><div class="needle" id="needle"></div><div class="center"></div></div>
+<div class="value" id="heading">—°</div><div class="unit" id="direction">Pusula izni bekleniyor</div>
+<div class="statgrid" style="margin-top:18px"><div class="stat"><span class="muted">Son yön</span><b id="last">—</b></div><div class="stat"><span class="muted">Yön değişimi</span><b id="delta">—</b></div></div>
+<div class="controls"><button class="primary" id="enable">PUSULAYI ETKİNLEŞTİR</button><button class="secondary" id="save">YÖNÜ KAYDET</button></div>
+</div>
+<div class="card"><h2>NE ÖLÇÜYORUZ?</h2><p class="muted">Pusula başlığı, telefonun baktığı yönü derece olarak gösterir. Bu ekranda µT değeri gösterilmez; çünkü Safari ham manyetometre verisini sunmaz.</p></div>
+</section>
+<section id="history" class="page hidden"><div class="card"><div class="row"><h2>KAYITLI YÖNLER</h2><button class="secondary" id="clear">Temizle</button></div><div id="records" class="muted">Henüz kayıt yok.</div></div></section>
+<section id="settings" class="page hidden"><div class="card"><h2>AYARLAR</h2><label>Yön uyarısı</label><select id="alert"><option value="off">Kapalı</option><option value="on">Yön değişiminde titreşim (desteklenirse)</option></select><p class="muted">iPhone'da Safari için hareket ve yön erişimine izin vermen gerekebilir. İzin istemi yalnızca butona bastığında gösterilir.</p><button class="secondary" id="cal" style="width:100%">PUSULAYI YENİDEN BAŞLAT</button></div></section>
+<section id="info" class="page hidden"><div class="card"><h2>TEKNİK BİLGİ</h2><div class="item"><span>Okunan veri</span><b>Cihaz yönü / pusula başlığı</b></div><div class="item"><span>µT ölçümü</span><b>Safari'de erişilemiyor</b></div><div class="item"><span>Altın algılama</span><b>Yapılamaz</b></div><div class="item"><span>Harici dedektör</span><b>Gelecek sürüm</b></div><p class="muted">Bu web uygulaması gerçek metal dedektörü değildir. Yakındaki mıknatıslar, hoparlörler, kılıf aksesuarları ve elektronik cihazlar pusulayı saptırabilir.</p></div></section>
+<div class="footer">GOLD RADAR • PUSULA MODU • µT / METAL TESPİTİ YAPMAZ</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);let active=false,lastHeading=null,records=JSON.parse(localStorage.getItem('grHeadingRecords')||'[]');
+function dir(d){return ['Kuzey','Kuzeydoğu','Doğu','Güneydoğu','Güney','Güneybatı','Batı','Kuzeybatı'][Math.round(d/45)%8]}
+function show(d){if(!Number.isFinite(d))return;d=(d+360)%360;let change=lastHeading===null?0:Math.min(Math.abs(d-lastHeading),360-Math.abs(d-lastHeading));$('heading').textContent=Math.round(d)+'°';$('direction').textContent=dir(d);$('needle').style.transform=`rotate(${d}deg)`;$('last').textContent=Math.round(d)+'°';$('delta').textContent=lastHeading===null?'—':change.toFixed(0)+'°';if(lastHeading!==null&&change>25&&$('alert').value==='on'&&navigator.vibrate)navigator.vibrate(100);lastHeading=d}
+function onOrientation(e){let h=typeof e.webkitCompassHeading==='number'?e.webkitCompassHeading:(typeof e.alpha==='number'?((360-e.alpha)%360):null);if(h===null)return;show(h);$('status').textContent='CANLI YÖN';$('source').textContent='YÖN SENSÖRÜ AKTİF'}
+async function enable(){try{if(typeof DeviceOrientationEvent==='undefined'){alert('Bu tarayıcı cihaz yönü sensörünü desteklemiyor.');return}
+if(typeof DeviceOrientationEvent.requestPermission==='function'){let p=await DeviceOrientationEvent.requestPermission();if(p!=='granted'){alert('Sensör izni verilmedi. iPhone ayarlarını ve Safari izinlerini kontrol et.');return}}
+window.addEventListener('deviceorientation',onOrientation,true);window.addEventListener('deviceorientationabsolute',onOrientation,true);active=true;$('status').textContent='SENSÖR AÇIK';$('source').textContent='VERİ BEKLENİYOR';$('direction').textContent='Telefonu yavaşça çevir';}catch(err){alert('Sensör başlatılamadı: '+err.message)}}
+$('enable').onclick=enable;$('cal').onclick=()=>{if(active){window.removeEventListener('deviceorientation',onOrientation,true);window.removeEventListener('deviceorientationabsolute',onOrientation,true)}lastHeading=null;$('heading').textContent='—°';$('direction').textContent='Yeniden izin ver';$('status').textContent='İZİN BEKLİYOR';$('source').textContent='SENSÖR BAĞLI DEĞİL';enable()};
+$('save').onclick=()=>{if(lastHeading===null){alert('Önce pusulayı etkinleştir ve yön verisi al.');return}records.unshift({date:new Date().toLocaleString('tr-TR'),heading:Math.round(lastHeading),direction:dir(lastHeading)});records=records.slice(0,100);localStorage.setItem('grHeadingRecords',JSON.stringify(records));render();alert('Pusula yönü kaydedildi.')};
+function render(){$('records').innerHTML=records.length?records.map(r=>`<div class="item"><span>${r.date}<br><span class="muted">${r.direction}</span></span><b>${r.heading}°</b></div>`).join(''):'Henüz kayıt yok.'}
+$('clear').onclick=()=>{if(confirm('Kayıtlar silinsin mi?')){records=[];localStorage.removeItem('grHeadingRecords');render()}};
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.page').forEach(p=>p.classList.toggle('hidden',p.id!==b.dataset.tab));if(b.dataset.tab==='history')render()});
+render();
+</script>
+</body></html>
